@@ -1,0 +1,199 @@
+/* ============================================================
+   dTech — custom.css
+   ============================================================ */
+
+/* ── Selection ── */
+::selection {
+    background-color: #3FD1C0;
+    color: #0f2421;
+}
+
+/* ── Copy animation ── */
+.copyInput {
+    display: inline-block;
+    line-height: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.copied::after {
+    position: absolute;
+    top: 8px;
+    right: 12%;
+    width: 100px;
+    display: block;
+    content: "COPIED";
+    font-size: 0.75em;
+    padding: 5px;
+    color: #fff;
+    background-color: #3FD1C0;
+    border-radius: 6px;
+    opacity: 0;
+    will-change: opacity, transform;
+    animation: showcopied 1.5s ease;
+}
+
+@keyframes showcopied {
+    0%   { opacity: 0; transform: translateX(100%); }
+    50%  { opacity: 0.7; transform: translateX(40%); }
+    70%  { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; }
+}
+
+/* ── Cookie Card ── */
+.cookies-card {
+    width: 500px;
+    padding: 24px;
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    z-index: 999999;
+    transition: bottom 0.5s ease;
+    background: rgba(233, 244, 242, 0.90);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.75);
+    border-radius: 16px;
+    box-shadow: 0 16px 48px rgba(63,209,192,0.14), 0 4px 16px rgba(0,0,0,0.07);
+    color: #0f2421;
+}
+
+.cookies-card.hide { bottom: -600px !important; }
+
+.cookies-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(63,209,192,0.12);
+    border: 1px solid rgba(63,209,192,0.25);
+    color: #3FD1C0;
+    font-size: 1.4rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cookies-card__content { margin-bottom: 0; }
+
+.cookies-btn {
+    color: #3FD1C0;
+    text-decoration: none;
+    padding: 8px 28px;
+    margin: 3px 4px;
+    display: inline-block;
+    border-radius: 999px;
+    border: 1.5px solid rgba(63,209,192,0.35);
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.22s;
+}
+
+.cookies-btn:hover {
+    background: rgba(63,209,192,0.12);
+    border-color: #3FD1C0;
+    color: #3FD1C0;
+}
+
+@media (max-width: 767px) {
+    .cookies-card {
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        border-radius: 16px 16px 0 0;
+        font-size: 14px;
+        padding: 16px;
+    }
+}
+
+/* ── Password strength popup ── */
+.hover-input-popup { position: relative; }
+
+.input-popup { display: none; }
+
+.hover-input-popup .input-popup {
+    display: block;
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    width: 280px;
+    background: rgba(15,36,33,0.92);
+    backdrop-filter: blur(12px);
+    color: #fff;
+    padding: 18px;
+    border-radius: 10px;
+    transform: translateX(-50%);
+    transition: all 0.3s;
+    z-index: 10;
+}
+
+.input-popup::after {
+    position: absolute;
+    content: '';
+    bottom: -19px;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent rgba(15,36,33,0.92) transparent;
+    transform: rotate(180deg);
+}
+
+.input-popup p {
+    padding-left: 22px;
+    position: relative;
+    font-size: 0.82rem;
+    margin-bottom: 4px;
+}
+
+.input-popup p::before {
+    position: absolute;
+    font-family: 'Line Awesome Free';
+    font-weight: 900;
+    left: 0;
+    top: 3px;
+    line-height: 1;
+    font-size: 16px;
+}
+
+.input-popup p.error { text-decoration: line-through; }
+.input-popup p.error::before  { content: "\f057"; color: #ef4444; }
+.input-popup p.success::before { content: "\f058"; color: #3FD1C0; }
+
+/* ── Responsive filter ── */
+.show-filter { display: none; }
+
+@media(max-width: 767px) {
+    .responsive-filter-card { display: none; }
+    .show-filter { display: block; }
+}
+
+/* ── Base color ── */
+.base-color { color: #3FD1C0 !important; }
+
+/* ── Sidebar bar (mobile) ── */
+.show-sidebar-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    background: rgba(63,209,192,0.10);
+    border: 1.5px solid rgba(63,209,192,0.28);
+    border-radius: 999px;
+    color: #3FD1C0;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.22s;
+    margin-bottom: 1rem;
+}
+
+.show-sidebar-bar:hover {
+    background: rgba(63,209,192,0.18);
+    box-shadow: 0 4px 14px rgba(63,209,192,0.22);
+}
