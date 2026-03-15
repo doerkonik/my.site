@@ -1,0 +1,84 @@
+/* ============================================================
+   dTech — app.css  (dashboard / user panel utilities)
+   ============================================================ */
+
+body {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.footer { margin-top: auto; }
+
+/* ── Custom Card (dashboard stat cards) ── */
+.custom--card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 16px;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 24px rgba(63, 209, 192, 0.09), 0 2px 8px rgba(0,0,0,0.04);
+    transition: all 0.28s ease;
+}
+
+.custom--card:hover {
+    box-shadow: 0 8px 36px rgba(63, 209, 192, 0.16), 0 2px 10px rgba(0,0,0,0.05);
+    transform: translateY(-2px);
+}
+
+.custom-radius-10 { border-radius: 12px !important; }
+
+/* ── Widget Icons ── */
+.widgets-icons-2 {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(63, 209, 192, 0.12);
+    font-size: 1.4rem;
+    border-radius: 12px;
+    border: 1px solid rgba(63, 209, 192, 0.22);
+    flex-shrink: 0;
+}
+
+.widgets-icons-2 i { color: #3FD1C0; }
+
+.rounded--circle { border-radius: 50% !important; }
+
+.text--white { color: #fff !important; }
+
+.ms--auto { margin-left: auto !important; }
+
+/* Gradient backgrounds for icons */
+.bg-gradient-blooker  { background: linear-gradient(135deg, rgba(63,209,192,0.20) 0%, rgba(63,209,192,0.08) 100%) !important; }
+.bg-gradient-scooter  { background: linear-gradient(135deg, rgba(6,182,212,0.20)  0%, rgba(6,182,212,0.08)  100%) !important; }
+.bg-gradient-bloody   { background: linear-gradient(135deg, rgba(239,68,68,0.18)  0%, rgba(239,68,68,0.07)  100%) !important; }
+.bg-gradient-ohhappiness { background: linear-gradient(135deg, rgba(34,197,94,0.18) 0%, rgba(34,197,94,0.07) 100%) !important; }
+
+/* ── Has-anchor (clickable card) ── */
+.has-anchor {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+/* ── Dashboard card top borders ── */
+.custom-border-top-success { border-top: 3px solid #22c55e; }
+.custom-border-top-info    { border-top: 3px solid #06b6d4; }
+.custom-border-top-warning { border-top: 3px solid #f59e0b; }
+.custom-border-top-primary { border-top: 3px solid #3FD1C0; }
+.custom-border-top-dark    { border-top: 3px solid rgba(63,209,192,0.28); }
+
+/* Border left accent */
+.border--primary { border-left: 4px solid #3FD1C0 !important; }
+
+.body-bg { background-color: #e9f4f2; }
