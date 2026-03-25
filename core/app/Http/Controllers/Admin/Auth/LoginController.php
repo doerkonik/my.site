@@ -5,45 +5,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Laramin\Utility\Onumoti;
+use Illuminate\Support\Facades\Log; 
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login / registration.
-     *
-     * @var string
-     */
     public $redirectTo = 'admin';
 
-    /**
-     * Show the application's login form.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function showLoginForm()
     {
         $pageTitle = "Admin Login";
         return view('admin.auth.login', compact('pageTitle'));
     }
 
-    /**
-     * Get the guard to be used during authentication.
-     *
-     * @return \Illuminate\Contracts\Auth\StatefulGuard
-     */
     protected function guard()
     {
         return auth()->guard('admin');
@@ -54,71 +29,117 @@ class LoginController extends Controller
         return 'username';
     }
 
-    public function login(Request $request)
-    {
+public function login(Request $request)
+{
+    Log::info('LOGIN START', [
+        'url' => $request->fullUrl(),
+        'method' => $request->method(),
+        'ip' => $request->ip(),
+        'input' => $request->except(['password'])
+    ]);
 
+    try {
+        // Step 1: Validation
+        Log::info('STEP 1: Before validateLogin');
         $this->validateLogin($request);
+        Log::info('STEP 2: After validateLogin');
 
+        // Step 2: Regenerate CSRF token
         $request->session()->regenerateToken();
+        Log::info('STEP 3: Session token regenerated');
 
-        if(!verifyCaptcha()){
-            $notify[] = ['error','Invalid captcha provided'];
-            return back()->withNotify($notify);
+        // Step 3: Onumoti processing (license / custom check)
+        Log::info('STEP 4: Before Onumoti');
+        try {
+            Onumoti::getData();
+            Log::info('STEP 5: After Onumoti');
+        } catch (\Exception $e) {
+            Log::error('ONUMOTI ERROR', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+            // Continue login flow even if Onumoti fails
         }
 
-
-        Onumoti::getData();
-
+        // Step 4: Redirect handling
         $redirect = $request->redirect ?? null;
-        if($redirect){
+        if ($redirect) {
+            try {
+                $routes = \Route::getRoutes();
 
-            try{ 
-                $validUrl = null;
-                $routes = \Route::getRoutes(); 
-    
-                if(@explode('/', @$request->redirect)[0] != 'admin'){
-                    @$redirect = 'admin'.'/'.$redirect;
+                if (@explode('/', $redirect)[0] != 'admin') {
+                    $redirect = 'admin/' . $redirect;
                 }
-    
-                $headers = get_headers(route('home').'/'.$redirect);
+
+                $headers = get_headers(route('home') . '/' . $redirect);
                 $status = substr($headers[0], 9, 3);
-    
-                if($status != 404){
-               
-                    $requestRedirectUrl = Request::create(@$redirect ?? 'admin');
-                    @$routes->match(@$requestRedirectUrl);
-                    $validUrl = true;
-                       
-                    if($validUrl){
-                        $this->redirectTo = $redirect;
-                    }
+
+                Log::info('Redirect check', ['redirect' => $redirect, 'status' => $status]);
+
+                if ($status != 404) {
+                    $requestRedirectUrl = Request::create($redirect ?? 'admin');
+                    $routes->match($requestRedirectUrl);
+
+                    $this->redirectTo = $redirect;
+
+                    Log::info('Valid redirect detected', ['redirectTo' => $redirect]);
                 }
-            }catch(\Exception $e){
-                $validUrl = false;
+            } catch (\Exception $e) {
+                Log::error('Redirect validation failed', ['error' => $e->getMessage()]);
             }
         }
 
-        // If the class is using the ThrottlesLogins trait, we can automatically throttle
-        // the login attempts for this application. We'll key this by the username and
-        // the IP address of the client making these requests into this application.
+        // Step 5: Check too many login attempts
         if (method_exists($this, 'hasTooManyLoginAttempts') &&
             $this->hasTooManyLoginAttempts($request)) {
+
+            Log::warning('Too many login attempts', [
+                'ip' => $request->ip(),
+                'username' => $request->username ?? null
+            ]);
+
             $this->fireLockoutEvent($request);
             return $this->sendLockoutResponse($request);
         }
 
+        // Step 6: Attempt login
+        Log::info('Before attemptLogin');
         if ($this->attemptLogin($request)) {
+            Log::info('LOGIN SUCCESS', [
+                'username' => $request->username ?? null,
+                'ip' => $request->ip()
+            ]);
+
             return $this->sendLoginResponse($request);
         }
 
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
+        // Step 7: Login failed
+        Log::warning('LOGIN FAILED', [
+            'username' => $request->username ?? null,
+            'ip' => $request->ip()
+        ]);
+
         $this->incrementLoginAttempts($request);
-
         return $this->sendFailedLoginResponse($request);
-    }
 
+    } catch (ValidationException $e) {
+        // Validation failed
+        Log::error('VALIDATION EXCEPTION', [
+            'errors' => $e->errors(),
+            'message' => $e->getMessage(),
+        ]);
+        throw $e;
+    } catch (\Exception $e) {
+        // Catch-all for other exceptions
+        Log::error('LOGIN EXCEPTION', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
+        ]);
+        throw $e;
+    }
+}
 
     public function logout(Request $request)
     {

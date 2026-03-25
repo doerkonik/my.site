@@ -23,6 +23,7 @@
         "mailjet/mailjet-apiv3-php": "^1.6",
         "messagebird/php-rest-api": "^3.1",
         "mollie/laravel-mollie": "^3.0",
+        "nahidacm/ehbautils": "^2.0",
         "phpmailer/phpmailer": "^6.9",
         "razorpay/razorpay": "^2.9",
         "sendgrid/sendgrid": "^8.1",

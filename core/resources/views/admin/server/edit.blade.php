@@ -205,7 +205,7 @@
             $('select[name=server_group_id]').on('change', function() {
                 var type = $(this).find('option:selected').data('type');
                 
-                if(type == 'Cpanel'){
+                if(type == 'Cpanel' || type == 'Ecp'){
                     $('.cpanel-input').removeClass('d-none');
                 }else{
                     $('.cpanel-input').addClass('d-none');

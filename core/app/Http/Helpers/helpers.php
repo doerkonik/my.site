@@ -21,7 +21,7 @@ use Laramin\Utility\VugiChugi;
 
 function systemDetails()
 {
-    $system['name'] = 'whmlab';
+    $system['name'] = 'EHBA';
     $system['version'] = '3.0';
     $system['build_version'] = '5.1.13';
     return $system;
@@ -36,8 +36,8 @@ function verificationCode($length)
 {
     if ($length == 0) return 0;
     $min = pow(10, $length - 1);
-    $max = (int) ($min - 1).'9';
-    return random_int($min,$max);
+    $max = (int) ($min - 1) . '9';
+    return random_int($min, $max);
 }
 
 function getNumber($length = 8)
@@ -52,23 +52,27 @@ function getNumber($length = 8)
 }
 
 
-function activeTemplate($asset = false) {
+function activeTemplate($asset = false)
+{
     $template = session('template') ?? gs('active_template');
     if ($asset) return 'assets/templates/' . $template . '/';
     return 'templates.' . $template . '.';
 }
 
-function activeTemplateName() {
+function activeTemplateName()
+{
     $template = session('template') ?? gs('active_template');
     return $template;
 }
 
-function siteLogo($type = null) {
+function siteLogo($type = null)
+{
     $name = $type ? "/logo_$type.png" : '/logo.png';
     return getImage(getFilePath('logoIcon') . $name);
 }
-function siteFavicon() {
-    return getImage(getFilePath('logoIcon'). '/favicon.png');
+function siteFavicon()
+{
+    return getImage(getFilePath('logoIcon') . '/favicon.png');
 }
 
 function loadReCaptcha()
@@ -126,11 +130,11 @@ function showAmount($amount, $decimal = 2, $separate = true, $exceptZeros = fals
     }
     if ($currencyFormat) {
         if (gs('currency_format') == Status::CUR_BOTH) {
-            return gs('cur_sym').$printAmount.' '.__(gs('cur_text'));
-        }elseif(gs('currency_format') == Status::CUR_TEXT){
-            return $printAmount.' '.__(gs('cur_text'));
-        }else{
-            return gs('cur_sym').$printAmount;
+            return gs('cur_sym') . $printAmount . ' ' . __(gs('cur_text'));
+        } elseif (gs('currency_format') == Status::CUR_TEXT) {
+            return $printAmount . ' ' . __(gs('cur_text'));
+        } else {
+            return gs('cur_sym') . $printAmount;
         }
     }
     return $printAmount;
@@ -218,7 +222,7 @@ function getImage($image, $size = null)
 }
 
 
-function notify($user, $templateName, $shortCodes = null, $sendVia = null, $createLog = true,$pushImage = null)
+function notify($user, $templateName, $shortCodes = null, $sendVia = null, $createLog = true, $pushImage = null)
 {
     $globalShortCodes = [
         'site_name' => gs('site_name'),
@@ -250,7 +254,7 @@ function getPaginate($paginate = null)
     return $paginate;
 }
 
-function paginateLinks($data,$view = null)
+function paginateLinks($data, $view = null)
 {
     return $data->appends(request()->all())->links($view);
 }
@@ -277,7 +281,7 @@ function menuActive($routeName, $type = null, $param = null)
 }
 
 
-function fileUploader($file, $location, $size = null, $old = null, $thumb = null,$filename = null)
+function fileUploader($file, $location, $size = null, $old = null, $thumb = null, $filename = null)
 {
     $fileManager = new FileManager($file);
     $fileManager->path = $location;
@@ -313,7 +317,7 @@ function diffForHumans($date)
 {
     $lang = session()->get('lang');
 
-    if(!$lang){
+    if (!$lang) {
         $lang = getDefaultLang();
     }
 
@@ -321,7 +325,8 @@ function diffForHumans($date)
     return Carbon::parse($date)->diffForHumans();
 }
 
-function getDefaultLang(){
+function getDefaultLang()
+{
     return Language::where('is_default', Status::YES)->first()->code ?? 'en';
 }
 
@@ -336,7 +341,8 @@ function showDateTime($date, $format = 'Y-m-d h:i A')
 }
 
 
-function getContent($dataKeys, $singleQuery = false, $limit = null, $orderById = false) {
+function getContent($dataKeys, $singleQuery = false, $limit = null, $orderById = false)
+{
 
     $templateName = activeTemplateName();
     if ($singleQuery) {
@@ -465,7 +471,8 @@ function gs($key = null)
     return $general;
 }
 
-function isImage($string){
+function isImage($string)
+{
     $allowedExtensions = array('jpg', 'jpeg', 'png', 'gif');
     $fileExtension = pathinfo($string, PATHINFO_EXTENSION);
     if (in_array($fileExtension, $allowedExtensions)) {
@@ -485,28 +492,29 @@ function isHtml($string)
 }
 
 
-function convertToReadableSize($size) {
+function convertToReadableSize($size)
+{
     preg_match('/^(\d+)([KMG])$/', $size, $matches);
     $size = (int)$matches[1];
     $unit = $matches[2];
 
     if ($unit == 'G') {
-        return $size.'GB';
+        return $size . 'GB';
     }
 
     if ($unit == 'M') {
-        return $size.'MB';
+        return $size . 'MB';
     }
 
     if ($unit == 'K') {
-        return $size.'KB';
+        return $size . 'KB';
     }
 
-    return $size.$unit;
+    return $size . $unit;
 }
 
 
-function frontendImage($sectionName, $image, $size = null,$seo = false)
+function frontendImage($sectionName, $image, $size = null, $seo = false)
 {
     if ($seo) {
         return getImage('assets/images/frontend/' . $sectionName . '/seo/' . $image, $size);
@@ -514,11 +522,13 @@ function frontendImage($sectionName, $image, $size = null,$seo = false)
     return getImage('assets/images/frontend/' . $sectionName . '/' . $image, $size);
 }
 
-function isSuperAdmin(){
+function isSuperAdmin()
+{
     return auth('admin')->id() == 1 ? true : false;
 }
 
-function billingCycle($period = null, $showNextDate = false) {
+function billingCycle($period = null, $showNextDate = false)
+{
     try {
 
         $array = [
@@ -557,7 +567,8 @@ function billingCycle($period = null, $showNextDate = false) {
     }
 }
 
-function welcomeEmail() {
+function welcomeEmail()
+{
     try {
 
         $array = [
@@ -573,32 +584,37 @@ function welcomeEmail() {
     }
 }
 
-function camelCaseToNormal($str) {
+function camelCaseToNormal($str)
+{
     return preg_replace('/(?<!^)([A-Z])/', ' $1', $str);
 }
 
-function permit($code){
+function permit($code)
+{
     return Role::hasPermission($code);
 }
 
-function getTld($domain){
+function getTld($domain)
+{
     $domain = strtolower($domain);
     $explode = explode('.', $domain);
 
-    if(count($explode) > 1){
+    if (count($explode) > 1) {
         array_shift($explode);
-        return '.'.implode('.', $explode);
+        return '.' . implode('.', $explode);
     }
 
     return null;
 }
 
-function getSld($domain){
+function getSld($domain)
+{
     $domain = strtolower($domain);
     return explode('.', $domain)[0];
 }
 
-function productType() {
+function productType()
+{
     $array = [
         1 => 'Shared Hosting',
         2 => 'Reseller Hosting',
@@ -609,13 +625,15 @@ function productType() {
     return $array;
 }
 
-function productModule() {
+function productModule()
+{
     try {
         $array = [
             0 => 'None',
             1 => 'cPanel',
             2 => 'Directadmin',
             3 => 'Plesk',
+            4 => 'Ecp',
         ];
 
         return $array;
@@ -624,7 +642,8 @@ function productModule() {
     }
 }
 
-function productModuleOptions() {
+function productModuleOptions()
+{
     try {
         $array = [
             1 => 'Automatically setup the product as soon as the first payment is received',
@@ -638,7 +657,8 @@ function productModuleOptions() {
     }
 }
 
-function xmlToArray($xml) {
+function xmlToArray($xml)
+{
     $xml = simplexml_load_string($xml);
     $json = json_encode($xml);
     $array = json_decode($json, true);
@@ -646,7 +666,8 @@ function xmlToArray($xml) {
     return $array;
 }
 
-function pricing($billingCycle = null, $price = null, $type = null, $showText = false, $column = null) {
+function pricing($billingCycle = null, $price = null, $type = null, $showText = false, $column = null)
+{
     try {
 
         $array = [
@@ -751,17 +772,19 @@ function pricing($billingCycle = null, $price = null, $type = null, $showText = 
     }
 }
 
-function nl22br($text) {
+function nl22br($text)
+{
     return preg_replace("/<br\W*?\/>/", "\n", $text);
 }
 
-function randomId(){
+function randomId()
+{
     $id = date('shdy');
     $cart = ShoppingCart::orderBy('id', 'DESC')->first();
-    if($cart){
-        $id = $id.$cart->id;
-    }else{
-        $id = $id.rand(10, 99);
+    if ($cart) {
+        $id = $id . $cart->id;
+    } else {
+        $id = $id . rand(10, 99);
     }
     return $id;
 }
@@ -804,24 +827,26 @@ function responseError($remark, $notify, $data = null)
     return buildResponse($remark, 'error', $notify, $data);
 }
 
-function getProductModuleLogo($type){
+function getProductModuleLogo($type)
+{
 
     $image = '';
     $class = '';
 
-    if($type == 1){
+    if ($type == 1) {
         $image = 'cpanel.png';
         $class = 'cpanel-logo';
-    }
-    elseif($type == 2){
+    } elseif ($type == 2) {
         $image = 'directadmin.png';
         $class = 'directadmin-logo';
-    }
-    elseif($type == 3){
+    } elseif ($type == 3) {
         $image = 'plesk.png';
         $class = 'plesk-logo';
+    } elseif ($type == 4) {
+        $image = 'ecp.png';
+        $class = 'ecp-logo';
     }
 
-    $src = getImage(getFilePath('productModule'). "/$image");
+    $src = getImage(getFilePath('productModule') . "/$image");
     return "<img src='$src' alt='Product Module Logo' class='product-module-$class' />";
 }
